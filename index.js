@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { getUsers, getResources, addLearning } = require('./queries');
+const { getUsers, getResources, addLearning, addResource } = require('./queries');
 const app = express();
 const port = 3001;
 
@@ -17,7 +17,8 @@ app.get('/', (request, response) => {
 
 app.get('/users', getUsers);
 app.get('/resources', getResources);
-app.post('/addlearning', addLearning);
+app.post('/resources', addResource);
+app.post('/learning', addLearning);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`)

@@ -26,6 +26,20 @@ const getResources = (request, response) => {
   });
 }
 
+const addResource = (request, response) => {
+  const {creator_id, title, description, link, tags} = request.body;
+  pool.query(
+    "INSERT INTO resources (creator_id, title, description, link, tags) VALUES ($1,$2,$3,$4,$5) RETURNING *",
+    [creator_id, title, description, link, tags],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(201).json(results.rows);
+    }
+  );
+};
+
 const addLearning = (request, response) => {
   const {user_id, resource_id, progress} = request.body;
   pool.query(
@@ -43,5 +57,6 @@ const addLearning = (request, response) => {
 module.exports = {
   getUsers,
   getResources,
+  addResource,
   addLearning
 }
