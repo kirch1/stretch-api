@@ -31,7 +31,6 @@ const getResources = (request, response) => {
       }
     });
   }
-  console.log(query);
   pool.query(query, args, (error, results) => {
     if (error) {
       throw error;
