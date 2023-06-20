@@ -18,7 +18,6 @@ const getUsers = (request, response) => {
 };
 
 const getResources = (request, response) => {
-  const { creator_id, title, description, link, tags } = request.body;
   pool.query("SELECT * FROM resources", (error, results) => {
     if (error) {
       throw error;
@@ -55,6 +54,21 @@ const addResource = (request, response) => {
   );
 };
 
+const addComment = (request, response) => {
+  const { user_id, resource_id, comment } = request.body;
+  pool.query(
+    "INSERT INTO comments (user_id, resource_id, comment) VALUES ($1,$2,$3) RETURNING *",
+    [user_id, resource_id, comment],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).json(results.rows);
+    }
+  );
+};
+
+
 const addLearning = (request, response) => {
   const { user_id, resource_id } = request.body;
   pool.query(
@@ -74,5 +88,6 @@ module.exports = {
   getResources,
   getComments,
   addResource,
+  addComment,
   addLearning,
 };

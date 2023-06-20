@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { getUsers, getResources, addLearning, addResource, getComments } = require('./queries');
+const { getUsers, getResources, addLearning, addResource, getComments, addComment } = require('./queries');
 const app = express();
 const port = 3001;
 
@@ -18,6 +18,7 @@ app.get('/', (request, response) => {
 app.get('/users', getUsers);
 app.get('/resources', getResources);
 app.get('/comments/:resource_id', getComments);
+app.post('/comments', addComment);
 app.post('/resources', addResource);
 app.post('/learning', addLearning);
 
