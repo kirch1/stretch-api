@@ -1,33 +1,48 @@
-const Pool = require('pg').Pool
+const Pool = require("pg").Pool;
 
 const pool = new Pool({
-  user: 'stretch_admin',
-  host: 'localhost',
-  database: 'stretch',
-  password: 'password',
+  user: "stretch_admin",
+  host: "localhost",
+  database: "stretch",
+  password: "password",
   port: 5432,
-})
+});
 
 const getUsers = (request, response) => {
-  pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
-    if(error) {
+  pool.query("SELECT * FROM users ORDER BY id ASC", (error, results) => {
+    if (error) {
       throw error;
     }
     response.status(200).json(results.rows);
   });
-}
+};
 
 const getResources = (request, response) => {
-  pool.query('SELECT * FROM resources', (error, results) => {
-    if(error) {
+  const { creator_id, title, description, link, tags } = request.body;
+  pool.query("SELECT * FROM resources", (error, results) => {
+    if (error) {
       throw error;
     }
     response.status(200).json(results.rows);
   });
-}
+};
+
+const getComments = (request, response) => {
+  const resource_id  = request.params.resource_id;
+  pool.query(
+    "SELECT * FROM comments WHERE resource_id = $1",
+    [resource_id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).json(results.rows);
+    }
+  );
+};
 
 const addResource = (request, response) => {
-  const {creator_id, title, description, link, tags} = request.body;
+  const { creator_id, title, description, link, tags } = request.body;
   pool.query(
     "INSERT INTO resources (creator_id, title, description, link, tags) VALUES ($1,$2,$3,$4,$5) RETURNING *",
     [creator_id, title, description, link, tags],
@@ -41,7 +56,7 @@ const addResource = (request, response) => {
 };
 
 const addLearning = (request, response) => {
-  const {user_id, resource_id, progress} = request.body;
+  const { user_id, resource_id } = request.body;
   pool.query(
     "INSERT INTO learning (user_id, resource_id) VALUES ($1,$2) RETURNING *",
     [user_id, resource_id],
@@ -57,6 +72,7 @@ const addLearning = (request, response) => {
 module.exports = {
   getUsers,
   getResources,
+  getComments,
   addResource,
-  addLearning
-}
+  addLearning,
+};
