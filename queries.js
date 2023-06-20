@@ -18,7 +18,21 @@ const getUsers = (request, response) => {
 };
 
 const getResources = (request, response) => {
-  pool.query("SELECT * FROM resources", (error, results) => {
+  const { tags } = request.body;
+  let query = "SELECT * FROM resources";
+  const args = [];
+  if(tags.length) {
+    query = "SELECT * FROM resources WHERE ";
+    tags.forEach((tag, i) => {
+      args.push(tag);
+      query += `$${i+1} ILIKE ANY(tags)`
+      if(i < tags.length - 1) {
+        query += " AND "
+      }
+    });
+  }
+  console.log(query);
+  pool.query(query, args, (error, results) => {
     if (error) {
       throw error;
     }
@@ -67,7 +81,6 @@ const addComment = (request, response) => {
     }
   );
 };
-
 
 const addLearning = (request, response) => {
   const { user_id, resource_id } = request.body;

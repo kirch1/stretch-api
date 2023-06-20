@@ -16,7 +16,7 @@ app.get('/', (request, response) => {
 });
 
 app.get('/users', getUsers);
-app.get('/resources', getResources);
+app.post('/resources', getResources);
 app.get('/comments/:resource_id', getComments);
 app.post('/comments', addComment);
 app.post('/resources', addResource);
